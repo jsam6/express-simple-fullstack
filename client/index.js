@@ -27,6 +27,13 @@ function deleteRowById(id) {
     });
 }
 
+function handleEditRow(id) {
+    const updateSection = document.querySelector('#update-row');
+    updateSection.hidden = false;
+    document.querySelector('#update-name-input').dataset.id = id;
+}
+
+const updateBtn = document.querySelector('#update-row-btn');
 const addBtn = document.querySelector('#add-name-btn');
 
 addBtn.onclick = function () {
@@ -43,6 +50,29 @@ addBtn.onclick = function () {
     })
     .then(response => response.json())
     .then(data => insertRowIntoTable(data['data']));
+}
+
+updateBtn.onclick = function() {
+    const updateNameInput = document.querySelector('#update-name-input');
+
+    console.log(updateNameInput);
+
+    fetch('http://localhost:5000/update', {
+        method: 'PATCH',
+        headers: {
+            'Content-type' : 'application/json'
+        },
+        body: JSON.stringify({
+            id: updateNameInput.dataset.id,
+            name: updateNameInput.value
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            location.reload();
+        }
+    })
 }
 
 function insertRowIntoTable(data) {
